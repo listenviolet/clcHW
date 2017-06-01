@@ -15,12 +15,6 @@
 		$username=$_SESSION['username'];
 		$userid=$_SESSION['userid'];
 		$classid=$_GET["classid"];
-		$dir_file=$_GET["dir_file"];
-		//echo "classid".$classid."<br>";
-		//echo "dir_file".$dir_file."<br>";
-		//$classid=3;
-		//$dir_file="hw_id1";
-		$csv_path=getCSV($classid);
 		getStuList($csv_path,$classid,$dir_file);
 	}
 

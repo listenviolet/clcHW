@@ -32,7 +32,7 @@
 		
 	}
 
-	//select prof existed classes_id
+	//select the existed classes_id
 	$username=$_SESSION["username"];
 	$userid=$_SESSION["userid"];
 	$query_prof_select_classesid="select classes_id from prof where prof_id=".$userid;

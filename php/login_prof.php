@@ -1,5 +1,5 @@
-<?php
-	session_start();
+<?php 
+	session_start(); 
 	require_once 'conn_db.php';
 
 	$username=$password="";
@@ -19,15 +19,16 @@
 		$password=test_input($_POST["password"]);
 	}
 	
-	$query="select * from student where "."'".$username."'"." = email";
+	$query="select * from prof where email='".$username."'";
 	$result=$GLOBALS['db']->query($query);
-	
+
 	if(mysqli_num_rows($result)>0){
+		//echo "Prof login.";
 		$values=mysqli_fetch_object($result);
 		$hash=$values->password;
-
 		if(password_verify($password,$hash)){
-			$userid=$values->stu_id;
+			$userid=$values->id;
+
 			if(isset($_SESSION['userid']) && strcmp($_SESSION['userid'],$userid)!=0){
 				$url="../pages/index.html";
 				echo "<script type='text/javascript'>";
@@ -38,30 +39,29 @@
 			else {
 				$_SESSION['username']=$username;
 				$_SESSION['userid']=$userid;
-				$url="../pages/stu_classes.php";
+				$url="../pages/set_collect.php";
 				echo "<script type='text/javascript'>";
 				echo "window.location.href='$url'";
 				echo "</script>";
 			}
 		}
 
-		else{
-			$url="../pages/login.html";
+		else {
+			$url="../pages/index.html";
 			echo "<script type='text/javascript'>";
 			echo "alert('Username or password wrong.');";
 			echo "window.location.href='$url'";
 			echo "</script>";
 		}
 	}
-	else{
-		$url="../pages/login.html";
+	
+	else {
+		$url="../pages/index.html";
 		echo "<script type='text/javascript'>";
 		echo "alert('User does not exist.');";
 		echo "window.location.href='$url'";
 		echo "</script>";
 	}
-	
-	echo $_SESSION['username'];
 
 	function test_input($data){
 		$data=trim($data);

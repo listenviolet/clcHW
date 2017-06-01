@@ -27,7 +27,6 @@
         
     <!-- Navigation -->
     <?php include("./share/navigator.php"); ?>
-
     <div class="congratulation">
         <div class="container">
             <h2>Congratulations!</h2>

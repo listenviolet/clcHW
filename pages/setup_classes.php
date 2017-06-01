@@ -33,28 +33,18 @@
         <div class="container">
             <h2>Set Up Classes</h2>
     		<div class="container">
-    			<form id="setupClasses" action="../php/setupDB_classes_form.php" method="post" enctype="multipart/form-data">
-    				<div class="existed-part" id="existed">
-                        <h4>The existed classes:</h4>
-    				</div>
-    				<div class="new-part" id="new">
-                        <h4>Add new classes:</h4>
-    					<input type="button" id="add" name="add" value="Add" class="btn btn-primary btn-lg">
-                        <br>
-            
-    					<div id="classes" name="classes" class="container">
-    					</div>
-    				</div>
-                    
-    				<div> 
-    					<input type="submit" name="submit" id="submit" value="Submit" class="btn btn-success">
-    				</div>
-    				<div hidden>
-                        <input type="text" id="deletearray" name="deletearray">
-    					<input type="text" id="classarray" name="classarray">
-    				</div>
-    			</form>
+                <div class="existed-part" id="existed">
+                    <h4>The existed classes:</h4>
+                    <div id="existed_classes" name="classes" class="container"></div>
+                </div>
+		
+				<div class="new-part" id="new">
+                    <h4>Add new classes:</h4>
+					<input type="button" id="add" name="add" value="Add" class="btn btn-primary btn-lg"><br>
+					<div id="add_classes" name="classes" class="container"></div>
+				</div>
     		</div>
+
             <hr>
             <button class="btn btn-default" id="goback"><a href="./set_collect.php"><i class="glyphicon glyphicon-backward"></i> Go Back To Operations</button>
         </div>
