@@ -32,12 +32,19 @@
 		if(mysqli_num_rows($result_stu)==1){
 			$obj=mysqli_fetch_object($result_stu);
 			$stu_id=$obj->id;
-			$query_stu_class="insert into stu_class (class_id,stu_id) values (".$class_id.",".$stu_id.")";
-			$result_stu_class=$db->query($query_stu_class);
-			if(!$result_stu_class){
-				$flag=0;
+
+			$query_exist="select * from stu_class where stu_id=".$stu_id." and class_id=".$class_id." and active=1";
+			$result_exist=$db->query($query_exist);
+			if(mysqli_num_rows($result_exist)){
+				$flag=-1;
 			}
-			
+			else {
+				$query_stu_class="insert into stu_class (class_id,stu_id) values (".$class_id.",".$stu_id.")";
+				$result_stu_class=$db->query($query_stu_class);
+				if(!$result_stu_class){
+					$flag=0;
+				}
+			}		
 		}
 		else{
 			$flag=0;

@@ -87,7 +87,9 @@ $(document).ready(function(){
 					$("#div_stu"+stuID+" input[type=text]").prop("readonly",true);
 					$("#div_stu"+stuID+" input[type=button]").prop("disabled",true);
 				} 
-				if(result==0) alert("Error adding the student.");
+				else if(result==0) { alert("Error adding the student.");}
+				else if(result==-1) {alert("The student already existed.");}
+
 			},
 			error:function(){
 				alert("Error ajax in adding the student.");
