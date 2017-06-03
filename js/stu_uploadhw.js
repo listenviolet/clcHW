@@ -85,14 +85,17 @@ $(document).ready(function(){
 
 			$("#hw_file_div"+hw_id).append("<label for='"+hw_id+"filetype_input"+j+"'>File type: </label>");
 			$("#hw_file_div"+hw_id).append("<input id='"+hw_id+"filetype_input"+j+"' value='"+hw_curr_filetype+"' readonly>");
-			console.log("<input id='"+hw_id+"filetype_input"+j+"'");
+			
 			$("#hw_file_div"+hw_id).append("<a class='btn btn-primary btn-file'><span class='fileupload-new'>Choose file</span><input type='file' id='"+hw_id+"upload"+j+"' name='upload"+j+"'></a>");
+			console.log("upload"+j);
+			console.log($("#"+hw_id+"upload"+j).attr("id"));
 			$("#"+hw_id+"upload"+j).change(function(){
 
 				var curr_filesize=this.files[0].size;
 				var curr_filename=$(this).val();
 				var curr_filetype=curr_filename.substring(curr_filename.indexOf("."));
 				var id=$(this).attr("id");
+				console.log("this.id:"+id);
 				checkFile(id,curr_filesize,curr_filetype);
 			});
 		}

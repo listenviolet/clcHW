@@ -14,17 +14,19 @@
 		}
 	}
 	
-	function upload_hw($j,$hwclass,$hwid,$username,$classname){
+	function upload_hw($j,$hwclass,$hwid,$userid,$name,$classname){
 		$ext = end(explode(".", $_FILES["upload".$j]["name"]));
-		$target_dir="../homework/".$hwclass."/".$hwid."/".$username."/";
+		echo "upload_hw ext:".$ext."<br>";
+		
+		$target_dir="../homework/".$hwclass."/".$hwid."/".$userid."/".$name."/";
 		$target_file=$target_dir.basename($_FILES["upload".$j]["name"]);
+		//$target_file=$target_dir.$name.".".$ext;
+		
 		echo "target_file: ".$target_file."<br>";
 		if(move_uploaded_file($_FILES["upload".$j]["tmp_name"], $target_file)){
 			$GLOBALS['flag']=1;
-			$code=generateCode();
 			$userid=$_SESSION["userid"];
 			echo "userid:".$userid."<br>";
-			//certificate($code,$userid,$hwid,$target_dir);
 		}
 		else {
 			$GLOBALS['flag']=0;
@@ -74,8 +76,10 @@
 
 	function certificate($code,$userid,$hwid,$hw_path){
 		$db=$GLOBALS['db'];
-		$query_stu_hw="insert into stu_hw(id,stu_id,hw_id,stu_hw) values ('".$code."',".$userid.",".$hwid.",'".$hw_path."')";
-		$result_stu_hw=$db->query($query_stu_hw);
+		//$query_stu_hw="insert into stu_hw(id,stu_id,hw_id,stu_hw) values ('".$code."',".$userid.",".$hwid.",'".$hw_path."')";
+		$procedure_stu_hw="call clcHW.updateHW('".$code."',".$userid.",".$hwid.",'".$hw_path."')";
+		echo "<br>".$procedure_stu_hw."<br>";
+		$result_stu_hw=$db->query($procedure_stu_hw);
 		$_SESSION["code"]=$code;
 	}
 
@@ -96,6 +100,7 @@
 		$hwname=$_POST["hw_name"];
 		$hwfilesnum=$_POST["hw_files_num"];
 		$classname=getClassName($hwclass);
+
 		$flag=1;
 		echo $hwid."<br>";
 		echo "hw_class:".$hwclass."<br>";
@@ -107,20 +112,29 @@
 		if(!file_exists("../homework/".$hwclass."/".$hwid."/")){
 			mkdir("../homework/".$hwclass."/".$hwid."/",0777);
 		}
-		if(!file_exists("../homework/".$hwclass."/".$hwid."/".$username."/")){
-			mkdir("../homework/".$hwclass."/".$hwid."/".$username."/",0777);
+		if(!file_exists("../homework/".$hwclass."/".$hwid."/".$userid."/")){
+			mkdir("../homework/".$hwclass."/".$hwid."/".$userid."/",0777);
+		}
+
+		$name=md5(rand());
+		if(!file_exists("../homework/".$hwclass."/".$hwid."/".$userid."/".$name."/")){
+			mkdir("../homework/".$hwclass."/".$hwid."/".$userid."/".$name."/",0777);
 		}
 		
 		for($i=0;$i<$hwfilesnum;$i++){
-			upload_hw($i,$hwclass,$hwid,$username,$classname);
+			upload_hw($i,$hwclass,$hwid,$userid,$name,$classname);
+
 		}
 
 		if($flag==1){
+			$code=generateCode();
+			$target_dir="../homework/".$hwclass."/".$hwid."/".$userid."/".$name."/";
+			certificate($code,$userid,$hwid,$target_dir);
 		    $_SESSION["classname"]=$classname;
 		    $_SESSION["hwname"]=$hwname;
 		    $url="../pages/certification.php";
 			echo "<script type='text/javascript'>";
-			//echo "window.location.href='$url'";
+			echo "window.location.href='$url'";
 			echo "</script>";
 		}
 		
