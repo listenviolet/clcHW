@@ -3,7 +3,7 @@
 	session_start(); 
 	require_once 'conn_db.php';
 	function isLoggedIn(){
-		if(isset($_SESSION['username'])){
+		if(isset($_SESSION['userid'])){
 			return ture;
 		}
 		else{
@@ -12,35 +12,33 @@
 	}
 	
 	if(isLoggedIn()){
-		$username=$_SESSION['username'];
-		$userid=$_SESSION['userid'];
 		$classid=$_GET["classid"];
-		getStuList($csv_path,$classid,$dir_file);
+		$hwid=$_GET["hwid"];
+		getStuList($classid,$hwid);
 	}
 
-	function getCSV($classid){
-		$query_class_csv="select class_csv from class where class_id=".$classid;
-		$result_class_csv=$GLOBALS['db']->query($query_class_csv);
-		if(mysqli_num_rows($result_class_csv)==1){
-			while($row_csv=mysqli_fetch_assoc($result_class_csv)){
-				$csv_path=$row_csv["class_csv"];
-			}
-			return $csv_path;
-		}
-		else return false;
-	}
-
-	function getStuList($csv_path,$classid,$dir_file){
+/*
+	$classid=1;
+	$hwid=2;
+	getStuList($classid,$hwid);
+*/
+	function getStuList($classid,$hwid){
 		$stu_list=array();
-		$fileHandle = fopen("$csv_path","r");
-		while(($row = fgetcsv($fileHandle,0,","))!=FALSE){
-			$stu_email=$row[0];
-			$stu_name=$row[1];
-			$stu_hwpath="../homework/".$classid."/".$dir_file."/".$stu_email."/";
-			$stu_list[]=["email"=>$stu_email,"name"=>$stu_name,"hwpath"=>$stu_hwpath];
+		$db=$GLOBALS['db'];
+		$query_stu_class="select student.id,student.name,student.email,stu_hw.hw_path from stu_class,student,stu_hw where stu_class.class_id=".$classid." and stu_class.active=1 and stu_class.stu_id=student.id and student.active=1 and stu_hw.stu_id=student.id and stu_hw.hw_id=".$hwid." and stu_hw.active=1";
+		$result_stu_class=$db->query($query_stu_class);
+		
+		if(mysqli_num_rows($result_stu_class)){
+			while($row=mysqli_fetch_assoc($result_stu_class)){
+				$stu_id=$row["id"];
+				$stu_email=$row["email"];
+				$stu_name=$row["name"];
+				$hw_path=$row["hw_path"];
+				$stu_list[]=["stu_id"=>$stu_id,"email"=>$stu_email,"name"=>$stu_name,"hwpath"=>$hw_path];
+			}
 		}
 		echo json_encode($stu_list);
+		//print_r($stu_list);
 	}
-
 ?>
 	

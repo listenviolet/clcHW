@@ -42,7 +42,6 @@
             <div id="class_name"></div>
             <div class="container">
                 <div class="hw-lists" id="hw-lists">
-                    
                 </div>
             </div>
             <button class="btn btn-default"><a href="./collect_classes.php"><i class="glyphicon glyphicon-backward"></i> Go Back To Classes List</button>

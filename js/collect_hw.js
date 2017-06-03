@@ -52,121 +52,17 @@ $(document).ready(function(){
 			var hw_deadline=hwinfo.hw_deadline;
 			console.log("hw_id:"+hw_id);
 			showHwInfo(hw_id,hw_name,hw_starttime,hw_deadline);
-			getStuList(classid);
+			getStuList(classid,hw_id,processGetStuList,errGetStuList);
 		});
 	}
 
-	//Each homework information is stored in a XML file. 
-	//This function is to read the XML file.
-	function loadXMLDoc(filename) {
-		var xmlhttp = new XMLHttpRequest();
-	  	xmlhttp.onreadystatechange = function() {
-		    if (this.readyState == 4 && this.status == 200) {
-		    	var dir_file=filename.substring(0,filename.indexOf("."));
-		    	console.log("loadXMLDoc dir_file:"+dir_file);
-		    	showHwName(this,dir_file);
-		    	getStuList(classid,dir_file,processGetStuList,errGetStuList);
-
-		    }
-		};
-	  	xmlhttp.open("GET", "../xml/"+classid+"/"+filename, true);
-	  	xmlhttp.send();
-	}
-
-	//Shows the information about the homework according to the XML file;
-	//Use collapse to have a better view.
-	function showHwName(xml,k){
-	  	xmlDoc = xml.responseXML;
-	  	var hwname=xmlDoc.getElementsByTagName("hwname")[0].childNodes[0].nodeValue;
-		var hwtime=xmlDoc.getElementsByTagName("hwtime")[0];
-		var hwstarttime=hwtime.childNodes[0].childNodes[0].nodeValue;
-		var hwdeadline=hwtime.childNodes[1].childNodes[0].nodeValue;
-		console.log("k: "+k);
-		console.log("showHwName:");
-	  	console.log("hwname:"+hwname+" hwstarttime:"+hwstarttime+" hwdeadline:"+hwdeadline);
-
-	  	var card=document.createElement("div");
-	  	var card_header=document.createElement("div");
-	  	var card_h=document.createElement("h4");
-	  	var card_a_text=document.createTextNode(hwname);
-	  	//card_h.appendChild(card_t);
-	  	var card_a=document.createElement("a");
-	  	var card_body=document.createElement("div");
-
-	  	card.className="card";
-		card.id="card"+k;
-		card_header.className="card-header";
-		card_header.setAttribute("role", "tab");
-		card_header.id="heading"+k;
-		card_h.className="mb-0";
-		card_a.setAttribute("data-toggle","collapse");
-		card_a.setAttribute("data-parent","#hw-lists");
-		card_a.href="#collapse"+k;
-		card_a.setAttribute("aria-expanded","false");
-		card_a.setAttribute("aria-controls","collapse"+k);
-		card_a.appendChild(card_a_text);
-		card_body.id="collapse"+k;
-		card_body.className="collapse";
-		card_body.setAttribute("role","tabpanel");
-		card_body.setAttribute("aria-labelledby","heading"+k);
-
-	  	var form_hw = document.createElement("form");
-		var label_starttime=document.createElement("label");
-		var label_deadline=document.createElement("label");
-		var input_starttime=document.createElement("input");
-		var input_deadline=document.createElement("input");
-		var download_list=document.createElement("input");
-
-		form_hw.id="form_hw"+k;
-		form_hw.action="../php/collect_download_form.php";
-		form_hw.method="post";
-		form_hw.enctype="multipart/form-data";
-		
-		label_starttime.for="starttime"+k;
-		label_starttime.innerHTML="Starttime :";
-
-		input_starttime.id="starttime"+k;
-		input_starttime.name="starttime";
-		input_starttime.type="text";
-		input_starttime.value=hwstarttime;
-
-		label_deadline.for="deadline"+k;
-		label_deadline.innerHTML="Deadline :";
-
-		input_deadline.id="deadline"+k;
-		input_deadline.name="deadline";
-		input_deadline.type="text";
-		input_deadline.value=hwdeadline;
-
-		download_list.id="download_list"+k;
-		download_list.name="download_list";
-		download_list.type="hidden";
-
-		form_hw.appendChild(label_starttime);
-		form_hw.appendChild(input_starttime);
-		form_hw.appendChild(label_deadline);
-		form_hw.appendChild(input_deadline);
-		form_hw.appendChild(download_list);
-
-		card_body.appendChild(form_hw);
-		card_h.appendChild(card_a);
-		card_header.appendChild(card_h);
-		card.appendChild(card_header);
-		card.appendChild(card_body);
-		hw_lists.appendChild(card);
-	}
-
-
-
-	function getStuList(classid,dir_file,processGetStuList,errGetStuList){
-		console.log("getStuList dir_file:"+dir_file);
+	function getStuList(classid,hw_id,processGetStuList,errGetStuList){
 		$.ajax({
 			type:"GET",
-			data:{"classid":classid,"dir_file":dir_file},
+			data:{"classid":classid,"hwid":hw_id},
 			url:"../php/collect_get_stulist.php",
 			success:function(data){
-				console.log("getStuList success dir_file:"+dir_file);
-				processGetStuList(data,dir_file);
+				processGetStuList(data,hw_id);
 			},
 			error:function(data){
 				errGetStuList(data);
@@ -174,48 +70,60 @@ $(document).ready(function(){
 		});
 	}
 
+	function showHwInfo(hw_id,hw_name,hw_starttime,hw_deadline){
+		console.log("in showHwInfo hw_name:"+hw_name);
+		console.log("in showHwInfo hw_id:"+hw_id);
+		$("#hw-lists").append("<div id='card"+hw_id+"' class='card'></div>");
+		$("#card"+hw_id).append("<div id='heading"+hw_id+"' class='card-header' role='tab'></div>");
+		$("#card"+hw_id).append("<div id='collapse"+hw_id+"' class='collapse' role='tabpanel' aria-labelledby='heading"+hw_id+"'></div>");
+		$("#heading"+hw_id).append("<h4><a data-toggle='collapse' data-parent='#hw-lists' href='#collapse"+hw_id+"' aria-expanded='false' aria-controls='collapse"+hw_id+"'>"+hw_name+"</a></h4>");
+		$("#collapse"+hw_id).append("<form id='form_hw"+hw_id+"' action='../php/collect_download_form.php' method='post' enctype='multipart/form-data'></form>");
+		$("#form_hw"+hw_id).append("<label for='starttime"+hw_id+"'>Starttime: </label>");
+		$("#form_hw"+hw_id).append("<input id='starttime"+hw_id+"' name='starttime' type='text' value='"+hw_starttime+"'>");
+		$("#form_hw"+hw_id).append("<label for='deadline"+hw_id+"'>Deadline: </label>");
+		$("#form_hw"+hw_id).append("<input id='deadline"+hw_id+"' name='deadline' type='text' value='"+hw_deadline+"'>");
+		$("#form_hw"+hw_id).append("<input id='download_list"+hw_id+"' name='download_list' hidden>");
+	}
+
 	//Get the student list of this class.
 	//Use a table element to show the students e-mail,name and the checkbox shows whether to choose and download one's homework or not.
-	function processGetStuList(data,dir_file){
-		console.log("success get stu list");
-		console.log("processGetStuList dir_file:"+dir_file);
+	function processGetStuList(data,hw_id){
+		$("#form_hw"+hw_id).append("<table class='table table-responsive' id='table"+hw_id+"'></table>");
+		$("#table"+hw_id).append("<tr><th>#</th><th>E-Mail</th><th>Name</th><th>Choose All<input type='checkbox' name='checkall' id='checkall"+hw_id+"'></th></tr>")
 		
-		$("#form_hw"+dir_file).append("<table class='table table-responsive' id='table"+dir_file+"'></table>");
-		$("#table"+dir_file).append("<tr><th>#</th><th>E-Mail</th><th>Name</th><th>Choose All<input type='checkbox' name='checkall' id='checkall"+dir_file+"'></th></tr>")
-		
-
 		var stu_list=JSON.parse(data);
+		console.log(stu_list);
 		$.each(stu_list,function(index,listinfo){
-			showStuList(index,listinfo,dir_file);
+			showStuList(index,listinfo,hw_id);
 		});
 
-		$("#checkall"+dir_file).click(function(){
+		$("#checkall"+hw_id).click(function(){
 			var status=$(this).prop("checked");
-			$('input[name="hwfile'+dir_file+'"]').prop("checked",status);
+			$('input[name="hwfile'+hw_id+'"]').prop("checked",status);
 		});
-		var $hwfile=$("input[name='hwfile"+dir_file+"']");
+		var $hwfile=$("input[name='hwfile"+hw_id+"']");
 		$hwfile.click(function(){
 			console.log("hwfile click");
-			$("#checkall"+dir_file).prop("checked",$hwfile.length==$("input[name='hwfile"+dir_file+"']:checked").length ? true : false);
+			$("#checkall"+hw_id).prop("checked",$hwfile.length==$("input[name='hwfile"+hw_id+"']:checked").length ? true : false);
 		});
 
-		$("#form_hw"+dir_file).append("<button type='submit' id='download"+dir_file+"' class='btn btn-success'>"+"<i class='glyphicon glyphicon-download'></i> Download</button>");
-		$("#form_hw"+dir_file).append("<hr>");
-		$("#form_hw"+dir_file).submit(function(){
+		$("#form_hw"+hw_id).append("<button type='submit' id='download"+hw_id+"' class='btn btn-success'>"+"<i class='glyphicon glyphicon-download'></i> Download</button>");
+		$("#form_hw"+hw_id).append("<hr>");
+		$("#form_hw"+hw_id).submit(function(){
 			var downloadlist = [];
-			$.each($("input[name='hwfile"+dir_file+"']:checked"),function(){
+			$.each($("input[name='hwfile"+hw_id+"']:checked"),function(){
 				downloadlist.push($(this).val());
 			});
-			$("#download_list"+dir_file).val(downloadlist);
+			$("#download_list"+hw_id).val(downloadlist);
 		});
 	}
 
-	function showStuList(index,listinfo,dir_file){
+	function showStuList(index,listinfo,hw_id){
 		var email=listinfo.email;
 		var name=listinfo.name;
 		var hwpath=listinfo.hwpath;
-		console.log("in show dir_file:"+dir_file);
-		$("#table"+dir_file).append("<tr><td>"+(index+1)+"</td><td>"+email+"</td><td>"+name+"</td><td><input type='checkbox' name='hwfile"+dir_file+"' value='"+hwpath+"'></td></tr>");
+		console.log("in show hw_id:"+hw_id);
+		$("#table"+hw_id).append("<tr><td>"+(index+1)+"</td><td>"+email+"</td><td>"+name+"</td><td><input type='checkbox' name='hwfile"+hw_id+"' value='"+hwpath+"'></td></tr>");
 	}
 
 	function errGetStuList(data){

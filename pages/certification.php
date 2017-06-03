@@ -34,6 +34,8 @@
                 <p class="success">You have handed the homeworks successfully.</p>
                 <a class="success" href="../php/certification.php" target="_blank">Click here to view your certification.</a>
             </div>
+
+            <button class="btn btn-default"><a href="./stu_classes.php"><i class="glyphicon glyphicon-backward"></i> Go Back To Classes List</button>
         </div>
     </div>
 

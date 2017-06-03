@@ -61,7 +61,7 @@ create table if not exists stu_hw(
 	id char(15) primary key,
 	stu_id int not null,
 	hw_id  int not null,
-	stu_hw varchar(100) not null,
+	hw_path varchar(100) not null,
 	active int default 1,
 	foreign key (stu_id) references student(id),
 	foreign key (hw_id) references homework(id)

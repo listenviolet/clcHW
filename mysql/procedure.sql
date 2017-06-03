@@ -3,7 +3,7 @@ create procedure updateHW(
 	in id char(15),
 	in stuID int,
 	in hwID int,
-	in stu_hw varchar(200)
+	in hw_path varchar(200)
 )
 begin
 	declare old_id char(15);
@@ -18,7 +18,7 @@ begin
 		update stu_hw set active=0 where id=old_id;
 	end loop update_hw;
 	close cur_id;
-	insert into stu_hw(id,stu_id,hw_id,stu_hw) values(id,stuID,hwID,stu_hw);
+	insert into stu_hw(id,stu_id,hw_id,hw_path) values(id,stuID,hwID,hw_path);
 end;/
 
 grant all on procedure clcHW.updateHW to 'admin'@'localhost';/
