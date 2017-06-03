@@ -12,7 +12,6 @@
 	}
 	
 	if(isLoggedIn()){
-		$username=$_SESSION['username'];
 		$classid=$_GET["classid"];
 		$code=$_GET["code"];
 		checkCode($code);
@@ -25,27 +24,19 @@
 		echo "</script>";
 	}
 
-	//Search in the table certification to check whether the homework has been uploaded or not
 	function checkCode($code){
 		$check_result=array();
 		$student_id="";
 		$student_email="";
 		$hw_path="";
-		$query="select * from certification where code_id='".$code."'";
+		$query="select student.id,student.email,stu_hw.hw_path from student,stu_hw where stu_hw.id='".$code."' and student.id=stu_hw.stu_id";
 		$result=$GLOBALS['db']->query($query);
 		if(mysqli_num_rows($result)==1){
-			while($row=mysqli_fetch_assoc($result)){
-				$student_id=$row["student_id"];
-				$query_stu_email="select email from student where stu_id=".$student_id;
-				$result_stu_email=$GLOBALS['db']->query($query_stu_email);
-				if(mysqli_num_rows($result)==1){
-					while($row_email=mysqli_fetch_assoc($result_stu_email)){
-						$student_email=$row_email["email"];
-					}
-				}
-				$hw_path=$row["hw_path"];
-				$flag=1;
-			}	
+			$obj=mysqli_fetch_object($result);
+			$student_id=$obj->id;
+			$student_email=$obj->email;
+			$hw_path=$obj->hw_path;
+			$flag=1;
 		}
 		else $flag=0;
 		$check_result[]=["student_id"=>$student_id,"student_email"=>$student_email,"hw_path"=>$hw_path,"flag"=>$flag];

@@ -6,4 +6,7 @@
 	$value = mysql_fetch_object($result);
 	$_SESSION['myid'] = $value->id;
 
+	$values=mysqli_fetch_object($result);
+	$hash=$values->password;
 ?>
+
