@@ -6,7 +6,8 @@ $(document).ready(function(){
 	function getClasses(callback,errback){
 		$.ajax({
 			type:"GET",
-			url:"../php/setupDB_hw.php",
+			//url:"../php/setupDB_hw.php",
+			url:"../php/setup_getClasses.php",
 			success:function(data){
 				callback(data);
 			},

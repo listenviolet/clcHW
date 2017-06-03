@@ -3,10 +3,9 @@ $(document).ready(function(){
 	var hw_num;
 	var input_classid=document.getElementById("classid");
 	var classid=input_classid.value;
-	console.log("classid:"+classid);
 	function pageLoad(){
 		getClassName(classid);
-		console.log("classid in pageload:"+classid);
+		//console.log("classid in pageload:"+classid);
 		var addhw=document.getElementById("addhw");
 		addhw.onclick=addHW;
 	}
@@ -16,11 +15,10 @@ $(document).ready(function(){
 		$.ajax({
 			type:"GET",
 			data:{"class_id":classid},
-			url:"../php/get_class_name.php",
+			url:"../php/getClassName.php",
 			success:function(data){
 				var classinfo;
 				classinfo=JSON.parse(data);
-				//console.log(classinfo);
 				var classname=classinfo[0].classname;
 				$("#class_name").append("<h2>For Class  "+"<span style='color:#4169E1'>"+classname+"</span></h2>");
 			},
@@ -322,7 +320,7 @@ $(document).ready(function(){
 		$.ajax({
 			type:"GET",
 			data:{"class_id":classid,"hw_id":hw_id,"hw_name":hw_name,"hw_starttime":hw_starttime,"hw_deadline":hw_deadline,"files_info":JSON.stringify(files_info)},
-			url:"../php/hw_detailDB_0401.php",
+			url:"../php/setup_hwDetail.php",
 			success:function(){
 				//callback(data);
 				alert("Saved!");

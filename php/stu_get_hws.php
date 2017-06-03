@@ -12,36 +12,33 @@
 	}
 	
 	if(isLoggedIn()){
-		$username=$_SESSION['username'];
-		$userid=$_SESSION['userid'];
 		$stu_classid=$_GET["stu_classid"];
-		//getHws($username,$stu_classid);
-		getHws($stu_classid);
+		getHwInfo($stu_classid);
 	}
-
-	//function getHws($username,$stu_classid){
-	function getHws($stu_classid){
-		$filename_array=array();
-		$dir="../xml/".$stu_classid."/";
-		$handler = opendir($dir);  	
-		while (($filename = readdir($handler)) !== false) {
-	    	if ($filename != "." && $filename != "..") {  
-	            $files[] = $filename ;  
-	       	}  
-	    }
-	    closedir($handler);    
+	
+/*
+	$stu_classid=1;
+	getHwInfo($stu_classid);
+*/
+	function getHwInfo($stu_classid){
+		$db=$GLOBALS['db'];
+		$hw_array=array();
 		$currenttime=date("Y-m-d");
-		foreach ($files as $value) {  
-		    $xml=simplexml_load_file($dir.$value);
-		    $hwname=$xml->hwname;
-		    $hwtime=$xml->hwtime;
-		    $files=$xml->files;
-		    $hwstarttime=$hwtime->hwstarttime;
-		    $hwdeadline=$hwtime->hwdeadline;
-		    if($currenttime >= $hwstarttime && $currenttime <= $hwdeadline){
-		    	$filename_array[]=$value;
-		    }
-		}  
-		echo json_encode($filename_array);
+		$query_hwInfo="select id,name,starttime,deadline,xml,hw_path from homework where class_id=".$stu_classid." and starttime<='".$currenttime."' and deadline>='".$currenttime."' and active=1";
+		//echo $query_hwInfo;
+		$result_hwInfo=$db->query($query_hwInfo);
+		if(mysqli_num_rows($result_hwInfo)){
+			while($row=mysqli_fetch_assoc($result_hwInfo)){
+				$hw_id=$row["id"];
+				$hw_name=$row["name"];
+				$hw_starttime=$row["starttime"];
+				$hw_deadline=$row["deadline"];
+				$hw_xml=$row["xml"];
+				$hw_path=$row["hw_path"];
+				$hw_array[]=["hw_id"=>$hw_id,"hw_name"=>$hw_name,"hw_starttime"=>$hw_starttime,"hw_deadline"=>$hw_deadline,"hw_xml"=>$hw_xml,"hw_path"=>$hw_path];
+			}
+		}
+		echo json_encode($hw_array);
+		//print_r($hw_array);
 	}
 ?>

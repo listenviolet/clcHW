@@ -22,7 +22,7 @@
     
     <link href="../css/setup_hws.css" rel="stylesheet">
     
-    <script src="../js/setup_hw_0425.js" type="text/javascript"></script>
+    <script src="../js/setup_hw.js" type="text/javascript"></script>
 
 </head>
 <body>

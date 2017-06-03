@@ -47,6 +47,7 @@
 
             <hr>
             <button class="btn btn-default" id="goback"><a href="./set_collect.php"><i class="glyphicon glyphicon-backward"></i> Go Back To Operations</button>
+            <button class="btn btn-default"><a href="./setup_hw.php"><i class="glyphicon glyphicon-forward"></i> Set Up Homework</button>
         </div>
 	</div>
 

@@ -1,103 +1,4 @@
-$(document).ready(function(){
-	var hws=document.getElementById("hws");
-	var input_classid=document.getElementById("classid");
-	var stu_classid=input_classid.value;
-	var filesType=new Array();
-	var filesSize=new Array();
-	console.log(stu_classid);
-
-	pageLoad();
-
-	function pageLoad(){
-		getFileNameArray(processGetFileInfo,errGetFileName);
-	}
-
-	function getFileNameArray(callback,errback){
-		$.ajax({
-			type:"GET",
-			data:{"stu_classid":stu_classid},
-			url:"../php/stu_get_hws.php",
-			success:function(data){
-				callback(data);
-			},
-			error:function(data){
-				errback(data);
-			}
-		});
-	}
-
-	//Each homework requires one or several files to be uploaded
-	//Each file has the limitations about the maximum size and the type 
-	function processGetFileInfo(data){
-		var filename_array=JSON.parse(data);
-		var files_num=filename_array.length; //homework sum
-		var Maximum=10;
-		//Use 2D array to discribe
-		//The first dimension discribes the homework number
-		//The second dimension discribe the file number in this homework
-		for(var arr_i=0;arr_i<files_num;arr_i++){
-			filesType[arr_i]=new Array();
-			filesSize[arr_i]=new Array();
-			for(var arr_j=0;arr_j<Maximum;arr_j++){
-				filesType[arr_i][arr_j]="";
-				filesSize[arr_i][arr_j]="";   
-			}
-		}
-		var i;
-		for(i=0;i<files_num;i++){
-			//html---------------
-			var k=-1; //Use k to describe the homework number of this class
-			//Send the XML request to read and praise the XML file
-			var xhttp=new XMLHttpRequest();
-			xhttp.onreadystatechange=function(){
-				console.log("onreadystatechange i:"+i);
-				if(this.readyState==4 && this.status==200){
-					console.log("k:"+k);
-					praiseXML(this,++k,filename_array);
-				}
-			};
-			console.log(filename_array[i]);
-			currentfile_path="../xml/"+stu_classid+"/"+filename_array[i];
-			console.log(currentfile_path);
-			if(xhttp.open("GET",currentfile_path,true)){
-				console.log("xhttp open.");
-			}
-			xhttp.send();
-		}
-	}
-
-	function errGetFileName(data){
-		console.log("err ajax");
-	}
-	
-	//Check whether the uploaded file meets the requirements
-	function checkFile(uploadid){
-		var upload_ele=document.getElementById(uploadid);
-		var curr_filesize=upload_ele.files[0].size;
-		console.log(curr_filesize);
-		var index_upload=uploadid.indexOf("upload");
-		var index_arrj=index_upload+6;
-		var arr_i=uploadid.substring(0,index_upload);
-		var arr_j=uploadid.substring(index_arrj);
-
-		console.log("substring:i "+arr_i+" j:"+arr_j);
-
-		if(filesSize[arr_i][arr_j]*1000<curr_filesize){
-			alert("The file size exceeds the limit allowed and cannot be saved.");
-			window.location.reload();
-		}
-
-		var curr_filename=upload_ele.value;
-		console.log(curr_filename);
-		var curr_filetype=curr_filename.substring(curr_filename.indexOf("."));
-		console.log(curr_filetype);
-		if(curr_filetype!==filesType[arr_i][arr_j]){
-			alert("The file type is not allowed.");
-			window.location.reload();
-		}
-	}
-
-	//Praise the XML file and get the requirements of the files needed to be uploaded
+//Praise the XML file and get the requirements of the files needed to be uploaded
 	function praiseXML(xml,k,filename_array){	
 		console.log("in praise");
 		var xmlDoc=xml.responseXML;
@@ -112,7 +13,6 @@ $(document).ready(function(){
 		var hw_name_h=document.createElement("h4");
 		var hw_name_text=document.createTextNode(hwname);
 		hw_name_h.appendChild(hw_name_text);
-		var hw_name_label=document.createElement("label");
 		var hw_starttime_div=document.createElement("div");
 		var hw_deadline_div=document.createElement("div");
 		var hw_submit=document.createElement("input");
@@ -149,12 +49,9 @@ $(document).ready(function(){
 		hw_form.action="../php/stu_uploadhw.php";
 		hw_form.method="post";
 		hw_form.enctype="multipart/form-data";
-		
-		hw_name_label.for=hw_form.id;
-		hw_name_label.innerHTML=hwname;
 
 		hw_starttime_div.id="hw_starttime_div"+k;
-		hw_starttime_div.name="hw_starttime_div"+k;
+		hw_starttime_div.name="hw_starttime_div";
 		hw_starttime_div.innerHTML="Start time: "+hwstarttime;
 
 		hw_deadline_div.id="hw_deadline_div"+k;
@@ -164,11 +61,10 @@ $(document).ready(function(){
 		hw_submit.type="submit";
 		//hw_submit.type="button";
 		hw_submit.id="hw_submit"+k;
-		hw_submit.name="hw_submit"+k;
+		hw_submit.name="hw_submit";
 		hw_submit.value="Save";
 		hw_submit.className="btn btn-success";
 		
-		//hw_form.appendChild(hw_name_label);
 		hw_form.appendChild(hw_name_h);
 		hw_form.appendChild(hw_starttime_div);
 		hw_form.appendChild(hw_deadline_div);
@@ -243,6 +139,3 @@ $(document).ready(function(){
 		hw_form.appendChild(hr);
 		hws.appendChild(hw_form);
 	}
-
-	
-});

@@ -18,14 +18,14 @@
 
 	function getClasses($userid){
 		$classes_info=array();
-		$query_prof_select_existed_classes="select id,name,csv from class where prof_id=".$userid." and active=1";
+		$query_prof_select_existed_classes="select id,name from class where prof_id=".$userid." and active=1";
 		$result_prof_select_existed_classes = $GLOBALS['db']->query($query_prof_select_existed_classes);
 		if(mysqli_num_rows($result_prof_select_existed_classes)){
 			while($row_prof_classes=mysqli_fetch_assoc($result_prof_select_existed_classes)){
 				$class_id=$row_prof_classes["id"];
 				$class_name=$row_prof_classes["name"];
-				$class_csv=$row_prof_classes["csv"];
-				$classes_info[]=["class_id"=>$class_id,"class_name"=>$class_name,"class_csv"=>$csv_path];
+				//$class_csv=$row_prof_classes["csv"]; "class_csv"=>$csv_path
+				$classes_info[]=["class_id"=>$class_id,"class_name"=>$class_name];
 			}
 		}
 		echo json_encode($classes_info);

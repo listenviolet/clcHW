@@ -30,8 +30,12 @@ create table if not exists class(
 
 create table if not exists homework(
 	id int primary key AUTO_INCREMENT,
+	name varchar(50) not null,
+	starttime date not null,
+	deadline date not null,
 	class_id int not null,
 	xml varchar(200) not null,
+	hw_path varchar(200) not null,
 	active int default 1,
 	foreign key (class_id) references class(id)
 );
@@ -57,7 +61,7 @@ create table if not exists stu_hw(
 	id char(15) primary key,
 	stu_id int not null,
 	hw_id  int not null,
-	hw_path varchar(100) not null,
+	stu_hw varchar(100) not null,
 	active int default 1,
 	foreign key (stu_id) references student(id),
 	foreign key (hw_id) references homework(id)

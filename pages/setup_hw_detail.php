@@ -12,7 +12,6 @@
 	if(isLoggedIn())
 	{
 		$classid=$_POST["classid"];
-		//echo $classid;
 	}
 ?>
 <!DOCTYPE html>
@@ -27,7 +26,7 @@
 
     <link href="../css/setup_hw_detail.css" rel="stylesheet">
 
-    <script src="../js/setup_hwdetail.js" type="text/javascript"></script>
+    <script src="../js/setup_hwDetail.js" type="text/javascript"></script>
 
 </head>
 <body lang="en">
@@ -55,6 +54,7 @@
 				</div>
 			</div>
             <button class="btn btn-default"><a href="./setup_hw.php"><i class="glyphicon glyphicon-backward"></i> Go Back To Classes List</button>
+            <button class="btn btn-default"><a href="./set_collect.php"><i class="glyphicon glyphicon-forward"></i> Go To Operations</button>
 		</div>    
 	</div>
 

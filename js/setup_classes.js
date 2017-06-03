@@ -63,10 +63,10 @@ $(document).ready(function(){
 		$("#div_stu"+stuID).append("<input id='input_email"+stuID+"' type='text'>");
 		$("#div_stu"+stuID).append("<label for='input_name"+stuID+"'>Student Name : </label>");
 		$("#div_stu"+stuID).append("<input id='input_name"+stuID+"' type='text'>");
-		$("#div_stu"+stuID).append("<input type='button' id='button_delStu"+stuID+"' class='btn btn-danger btn-sm' value='Delete'>");
-		$("#button_delStu"+stuID).click(function(){
-			$("#div_stu"+stuID).remove();
-		});
+		//$("#div_stu"+stuID).append("<input type='button' id='button_delStu"+stuID+"' class='btn btn-danger btn-sm' value='Delete'>");
+		//$("#button_delStu"+stuID).click(function(){
+			//$("#div_stu"+stuID).remove();
+		//});
 		$("#div_stu"+stuID).append("<input type='button' id='button_saveStu"+stuID+"' class='btn btn-success btn-sm' value='Save'>");
 		$("#button_saveStu"+stuID).click(function(){
 			var email=$("#input_email"+stuID).val();
@@ -76,13 +76,17 @@ $(document).ready(function(){
 	}
 
 	function addStuClass(class_id,email,name,stuID){
+		console.log("class_id:"+class_id+" email:"+email+" name:"+name+" stuID:"+stuID);
 		$.ajax({
 			type:"GET",
 			data:{"class_id":class_id,"email":email,"name":name},
 			url:"../php/setup_addStu.php",
 			success:function(data){
 				var result=JSON.parse(data);
-				if(result==1) $("#div_stu"+stuID).prop('disabled',true);
+				if(result==1){
+					$("#div_stu"+stuID+" input[type=text]").prop("readonly",true);
+					$("#div_stu"+stuID+" input[type=button]").prop("disabled",true);
+				} 
 				if(result==0) alert("Error adding the student.");
 			},
 			error:function(){

@@ -5,7 +5,6 @@ $(document).ready(function(){
 
 	function pageLoad(){
 		getClassName(classid);
-		console.log("classid in pageload:"+classid);
 		getHwLists(processGetHwLists,errGetHwLists);
 	}
 
@@ -14,7 +13,7 @@ $(document).ready(function(){
 		$.ajax({
 			type:"GET",
 			data:{"class_id":classid},
-			url:"../php/get_class_name.php",
+			url:"../php/getClassName.php",
 			success:function(data){
 				var classinfo;
 				classinfo=JSON.parse(data);
@@ -44,16 +43,17 @@ $(document).ready(function(){
 
 	//Get the homework information of this class
 	function processGetHwLists(data){
-		var filename_array=JSON.parse(data);
-		var files_num=filename_array.length;
-		console.log("filename_array:"+filename_array[0]);
-		var i;
-		for(i=0;i<files_num;i++){
-			filename=filename_array[i];
-			var dir_file=filename.substring(0,filename.indexOf("."));
-		    console.log("processGetHwLists dir_file:"+dir_file);
-			loadXMLDoc(filename);	
-		}
+		var hw_array=JSON.parse(data);
+		var hw_num=hw_array.length;
+		$.each(hw_array,function(index,hwinfo){
+			var hw_id=hwinfo.hw_id;
+			var hw_name=hwinfo.hw_name;
+			var hw_starttime=hwinfo.hw_starttime;
+			var hw_deadline=hwinfo.hw_deadline;
+			console.log("hw_id:"+hw_id);
+			showHwInfo(hw_id,hw_name,hw_starttime,hw_deadline);
+			getStuList(classid);
+		});
 	}
 
 	//Each homework information is stored in a XML file. 
@@ -66,6 +66,7 @@ $(document).ready(function(){
 		    	console.log("loadXMLDoc dir_file:"+dir_file);
 		    	showHwName(this,dir_file);
 		    	getStuList(classid,dir_file,processGetStuList,errGetStuList);
+
 		    }
 		};
 	  	xmlhttp.open("GET", "../xml/"+classid+"/"+filename, true);
@@ -222,7 +223,7 @@ $(document).ready(function(){
 	}
 
 	function errGetHwLists(data){
-		alert("error ajax");
+		alert("Fail to get homework.");
 	}
 
 	pageLoad();

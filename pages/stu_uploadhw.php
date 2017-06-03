@@ -25,9 +25,9 @@
 
     <meta name="description" content="student upload homework">
     
-    <link href="../css/stu_uploadhws.css" rel="stylesheet">
+    <link href="../css/stu_uploadhw.css" rel="stylesheet">
 
-    <script src="../js/stu_uploadhws.js" type="text/javascript"></script>
+    <script src="../js/stu_uploadhw.js" type="text/javascript"></script>
     
 </head>
 

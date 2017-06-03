@@ -28,7 +28,7 @@
 
     <meta name="description" content="collect homework">
     <link href="../css/collect_hws.css" rel="stylesheet">
-    <script src="../js/collect_hw_form.js" type="text/javascript"></script>
+    <script src="../js/collect_hw.js" type="text/javascript"></script>
 
 </head>
 <body>
